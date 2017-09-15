@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<!-- DW6 -->
+<head>
+<title>Weekly Game Chooser v3 - Game List from ESPN</title>
+<script src="team_list.js" type="text/javascript"></script>
+<script src="team_games_list.js" type="text/javascript"></script>
+<script src="team_chooser.js" type="text/javascript"></script>
+<link href="team_chooser.css" rel="stylesheet" type="text/css">
+
+<!--
+Version 3
+- Still does not curtail loops when checking games/winners/losers vs. 
+  previous weeks' choices
+-->
+
+<script type="text/javascript">
+	// populate text filed inputs with team names scrapped from NFL weekly games page
+	window.onload = function populateGames(){
+		var fieldObjects = document.getElementsByClassName("game");
+	
+		for( var i = 0; i < gameList.length; i++ ){
+			fieldObjects[i].value = window[gameList[i]][0];
+			}
+			
+		document.getElementById("WinGame").innerHTML   = "?";
+		document.getElementById("WinTeam").value       = "";			
+		document.getElementById("LoseGame").innerHTML  = "?";
+		document.getElementById("LoseTeam").value      = "";
+		
+		gNumberOfGames = gameList.length/2;
+		}
+</script>
+</head>
+
+<body>
+<form id="chooser">
+  
+  <!-- Game Slate -->
+  <fieldset id="GameSlate">
+    <legend>Games </legend>
+    <p>
+      <br>
+      <input class="game" name="01Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="01Home" type="text" value="none" size="16" maxlength="20">
+      Game 01
+      <br>
+      <input class="game" name="02Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="02Home" type="text" value="none" size="16" maxlength="20">
+      Game 02
+      <br>
+      <input class="game" name="03Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="03Home" type="text" value="none" size="16" maxlength="20">
+      Game 03
+      <br><br>
+      <input class="game" name="04Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="04Home" type="text" value="none" size="16" maxlength="20">
+       Game 04
+      <br>
+      <input class="game" name="05Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="05Home" type="text" value="none" size="16" maxlength="20">
+      Game 05
+      <br>
+      <input class="game" name="06Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="06Home" type="text" value="none" size="16" maxlength="20">
+      Game 06
+      <br><br>
+      <input class="game" name="07Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="07Home" type="text" value="none" size="16" maxlength="20">
+      Game 07
+      <br>
+      <input class="game" name="08Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="08Home" type="text" value="none" size="16" maxlength="20">
+      Game 08
+      <br>
+      <input class="game" name="09Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="09Home" type="text" value="none" size="16" maxlength="20">
+      Game 09
+      <br><br>
+      <input class="game" name="10Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="10Home" type="text" value="none" size="16" maxlength="20">
+      Game 10
+      <br>
+      <input class="game" name="11Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="11Home" type="text" value="none" size="16" maxlength="20">
+      Game 11
+      <br>
+      <input class="game" name="12Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="12Home" type="text" value="none" size="16" maxlength="20">
+      Game 12
+      <br><br>
+      <input class="game" name="13Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="13Home" type="text" value="none" size="16" maxlength="20">
+      Game 13
+      <br>
+      <input class="game" name="14Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="14Home" type="text" value="none" size="16" maxlength="20">
+      Game 14
+      <br>
+      <input class="game" name="15Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="15Home" type="text" value="none" size="16" maxlength="20">
+      Game 15
+      <br><br>
+      <input class="game" name="16Away" type="text" value="none" size="16" maxlength="20">
+      @
+      <input class="game" name="16Home" type="text" value="none" size="16" maxlength="20">
+      Game 16
+    </p>
+    <p>&nbsp;</p>
+  </fieldset>
+  
+  <!-- Winner -->
+  <fieldset id="Winner">
+    <legend>Winner</legend>
+    <p>
+      Game Number <span id="WinGame">01</span>:
+      <label>Team:</label>
+      <input type="text" id="WinTeam" name="WinTeam" size="15" value="Winning Team">
+      <br>
+    </p>
+  </fieldset>
+  
+  <!-- Loser -->
+  <fieldset id="Loser">
+    <legend>Loser</legend>
+    <p>
+      Game Number <span id="LoseGame">01</span>:
+      <label>Team:</label>
+      <input type="text" id="LoseTeam" name="LoseTeam" size="15" value="Losing Team">
+      <br>
+    </p>
+  </fieldset>
+  
+  <p style="margin-left:20px;"> <input style="width: 120px" name="GetResults" value="Get Results" type="button" onClick="getResults()"></p>
+</form>
+<!--<script>
+	populateSelects();
+</script>-->
+
+</body>
+</html>
