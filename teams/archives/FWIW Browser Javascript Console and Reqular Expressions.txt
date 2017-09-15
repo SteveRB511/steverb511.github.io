@@ -1,0 +1,36 @@
+From:	...
+Sent:	Monday, September 28, 2015 11:42
+To:	...
+Subject:	FWIW: Browser Javascript Console and Reqular Expressions
+Attachments:	JavaScript Console Example Code.pdf; 01 Page Area of Interest.jpg; 02 HTML 
+Class.jpg; 03 Console JavaScript and Result.jpg
+
+
+This may not be of use to you now but it's good to be aware of ways in which browser developer tools 
+can be used as well as the value of regular expressions in coding. You may just want to file this away for 
+future reference.
+
+I've had a lull at work so I started a JavaScript project to get back into a little programming. Part of it 
+involves populating a series of dropdown menus (HTML "select" inputs) from a list of NFL teams to set 
+up a slate of games. The next progression was to get the slate of games directly from the ESPN NFL 
+game listing page so I didn't have to use the select inputs to set up each game manually. That's where 
+browser console comes into play since, for security, JavaScript does not work between my web page 
+domain and the ESPN domain. 
+
+The procedure is to go to the NFL game page (01 Page Area of Interest) and use the browser's developer 
+tools (Firebug extension is great if using Firefox).  In the developer tools select something like "Inspect 
+Element"  to identify the section of the page of interest to  get the class name for the element 
+surrounding the text of interest in the page's HTML(02 HTML Class.png)
+     Select the console in the developer tools , paste in the code, and hit Run; the output will be a list of 
+teams taken from the text enclosed by the elements using the class identified above.
+     The original output included 2 or 3 letter codes which I stripped out using regular expressions except 
+in the case of the Giants and Jets. In those two cases I use the letter codes to append 'Giants' or 'Jet's to 
+distinguish between the two New York teams.
+     I also added code to format the list as an array  so that it can just be pasted into a JavaScript file that 
+will be used to set up the game pairings.
+     The console output for the code sample is a list of teams listed in the order they appear for games on 
+the page (03 Console JavaScript and Result).
+     I've include the annotated code in the PDF along with references for more information. (The Mozilla 
+Developer Network referenced therein is one of the top resources for HTML, CSS, and JavaScript.)
+
+Hope this is useful to some degree...
