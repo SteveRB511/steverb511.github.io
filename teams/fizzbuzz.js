@@ -1,1 +1,18 @@
-var three; var five;for( var i = 0; i < 100; i++ ) {  three = (i + 1)%3;  five  = (i + 1)%5;     if( three === 0 &&  five === 0 ) {    console.log( "fizzbuzz" );    }  else if(three === 0) {    console.log( "fizz" );    }  else if(five === 0) {    console.log( "buzz" );    }      else {    console.log( i + 1 );    }}var three; var five;/*More compact*/for( var i = 0; i < 100; i++ ) {     if( (i +1)%3 === 0 && (i +1)%5 === 0 ) {    console.log( "fizzbuzz" );    }  else if( (i +1)%3 === 0 ) {    console.log( "fizz" );    }  else if( (i +1)%5 === 0 ) {    console.log( "buzz" );    }  else {    console.log( i + 1 );    }}
+var three; 
+var five;
+
+for( var i = 0; i < 100; i++ ) {
+   
+  if( (i +1)%3 === 0 && (i +1)%5 === 0 ) {
+    console.log( "fizzbuzz" );
+    }
+  else if( (i +1)%3 === 0 ) {
+    console.log( "fizz" );
+    }
+  else if( (i +1)%5 === 0 ) {
+    console.log( "buzz" );
+    }
+  else {
+    console.log( i + 1 );
+    }
+}
