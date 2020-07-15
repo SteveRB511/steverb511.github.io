@@ -101,7 +101,7 @@
         const arcGenerator = d3.arc();
 
         function drawGrid(){
-            console.log('drawGrid()'
+            console.log('drawGrid()');
             /******************************************************
             * Semi-circle Grid Lines
             ******************************************************/
@@ -170,8 +170,6 @@
 
         async function drawChart(edipi) {
             
-            console.log('drawChart()');
-            
             // Remove any existing overlay paths from previous EDIPI selection
             clearOverlays();
 
@@ -181,8 +179,6 @@
 
             const dataset = await d3.csv("retirement_sample.csv");
             const retireDates = dataset[edipi];
-            console.log(retireDates);
-
 
             /* D3.js date parsing and formating */
             const dateParser = d3.timeParse("%m/%d/%Y")
