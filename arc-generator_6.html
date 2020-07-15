@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <title>Arc Generator 6</title>
+    <!-- https://www.d3indepth.com/shapes/ -->
+    <!-- http://bl.ocks.org/cmdoptesc/6226150 -->
+    <!-- Fullstack D3 and Data Visualization, Amelia Wattenberger -->
+    <style>
+        body { background-color: #000; }
+
+        path.gridArc {
+            fill: gray;
+        }
+        line.gridLine {
+            stroke: gray;
+        }
+
+        path.overlay00  { fill: red; }
+        path.overlay25  { fill: orange; }
+        path.overlay50  { fill: lightskyblue; }
+        path.overlay75  { fill: springgreen; }
+        path.overlay100 { fill: greenyellow; }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: center; width: 900px; padding-bottom: 10px;">
+        <p style="font-size: 1.3rem; font-weight:bold; color: white;">Retirement Progress</p>
+        <p style="font-size: 1.1rem; font-weight:bold; color: white;">Select an EDIPI</p>
+        
+        <select name="edipi" id="EDIPI">
+            <option value=0>EDIPI 101</option>
+            <option value=1>EDIPI 102</option>
+            <option value=2>EDIPI 103</option>
+            <option value=3>EDIPI 104</option>
+            <option value=4>EDIPI 105</option>
+            <option value=5>EDIPI 106</option>
+            <option value=6>EDIPI 107</option>
+            <option value=7>EDIPI 108</option>
+            <option value=8>EDIPI 109</option>
+            <option value=9>EDIPI 110</option>
+            <option value=10>EDIPI 111</option>
+            <option value=11>EDIPI 112</option>
+            <option value=12>EDIPI 113</option>
+        </select>
+
+    </div>
+    <svg width="880" height="480"  aria-labelledby="title" aria-describedby="desc">
+        <title>Retirement Progress</title>
+        <desc>Radial chart provides a visual representation of a viewer's 
+              progress towards retirement under 7 different options.
+              Arcs without color overlays indicate requirements that are 
+              not relevant to the viewer.</desc>
+        <g transform="translate(450, 430)">
+            <g id='grid'>
+                <g id='radialLabels'>
+                    <text x="-410" y="0"    font-family="sans-serif" font-size="20px" fill="red">0%</text>
+                    <text x="-305" y="-270" font-family="sans-serif" font-size="20px" fill="orange">25%</text>
+                    <text x="-19"  y="-400" font-family="sans-serif" font-size="20px" fill="lightskyblue">50%</text>
+                    <text x="270"  y="-270" font-family="sans-serif" font-size="20px" fill="springgreen">75%</text>
+                    <text x="380"  y="0"    font-family="sans-serif" font-size="20px" fill="greenyellow">100%</text>
+                </g>
+                <g id='arcLabels'>
+                    <text x="-37"  y="-107" font-family="sans-serif" font-size="15px" fill="lightgray">Mandatory</text>
+                    <text x="-40"  y="-152" font-family="sans-serif" font-size="15px" fill="lightgray">Early 50/20</text>
+                    <text x="-32"  y="-197" font-family="sans-serif" font-size="15px" fill="lightgray">Optional</text>
+                    <text x="-50"  y="-242" font-family="sans-serif" font-size="15px" fill="lightgray">Optional 55/30</text>
+                    <text x="-54"  y="-287" font-family="sans-serif" font-size="15px" fill="lightgray">FERS Minimum</text>
+                    <text x="-50"  y="-332" font-family="sans-serif" font-size="15px" fill="lightgray">Optional 60/20</text>
+                    <text x="-46"  y="-377" font-family="sans-serif" font-size="15px" fill="lightgray">Optional 62/5</text>
+                </g>
+                <g id='dateLabels'>
+                    <text id="label1"  x="-340" y="32" font-family="sans-serif" font-size="24px" fill="lightgray">Retirement Dates >></text>
+                    <text id="retire1" x="62"   y="18" font-family="sans-serif" font-size="13px" fill="lightgray"></text>
+                    <text id="retire2" x="107"  y="40" font-family="sans-serif" font-size="13px" fill="lightgray"></text>
+                    <text id="retire3" x="152"  y="18" font-family="sans-serif" font-size="13px" fill="lightgray"></text>
+                    <text id="retire4" x="197"  y="40" font-family="sans-serif" font-size="13px" fill="lightgray"></text>
+                    <text id="retire5" x="242"  y="18" font-family="sans-serif" font-size="13px" fill="lightgray"></text>
+                    <text id="retire6" x="287"  y="40" font-family="sans-serif" font-size="13px" fill="lightgray"></text>
+                    <text id="retire7" x="332"  y="18" font-family="sans-serif" font-size="13px" fill="lightgray"></text>
+                </g>
+
+            </g>
+            <g id='overlay'>
+            </g>
+        </g>
+    </svg>
+
+    <div style="text-align: center; width: 900px;">
+        <p id=svc_length style="color: white; font-weight: 400; font-size: 18px; font-family: sans-serif ;">Current Length of Service</p>
+        <p></p>
+
+    </div>
+
+    <!-- d3.v5 is required or dataset comes back as undefined -->
+    <script src = "https://d3js.org/d3.v5.min.js"></script>
+
+    <script>
+        // Angle constants
+        const angleStart   = -0.50 * Math.PI; // used for grid and overlay arcs
+        const startRadius  = 99;
+
+        //Add event listener for <select> element
+        const edipiSelect = document.getElementById('EDIPI');
+        edipiSelect.addEventListener( 'change', (e) => {
+            drawChart(e.target.value);
+        });
+
+        // Create an arc generator for grid and overlays
+        const arcGenerator = d3.arc();
+
+        function drawGrid(){
+            /******************************************************
+            * Semi-circle Grid Lines
+            ******************************************************/
+
+            for (var i = 0; i < 7; i++) {
+                var radiusInner =  startRadius + 45 * i;
+                var radiusOuter =  (startRadius + 1) + 45 * i;
+
+                var pathData = arcGenerator({
+                    startAngle:  angleStart,
+                    endAngle:    0.5 * Math.PI,
+                    innerRadius: radiusInner,
+                    outerRadius: radiusOuter
+                });
+
+                d3.select('g#grid')
+                .append('path')
+                .attr('class', 'gridArc')
+                .attr('d', pathData);
+            }
+
+            /******************************************************
+            * Radial Grid Lines
+            ******************************************************/
+
+            // offset is a multiple of the radius
+            // - Math.PI / 4 rotates 90 degrees CCW so chart starts 
+            // above the center origin point (2PI radians/4)
+            const angleCoordinates  = (angle, offset=1) => [
+                Math.cos(angle - Math.PI / 4) * 370 * offset, 
+                Math.sin(angle - Math.PI / 4) * 370 * offset
+            ]
+            
+            // Add radial grid lines: 0, 45, 90, 135, 180
+            const percentLabels  = [ '0%', '25%', '50%', '75%', '100%' ];
+            const percentRadians = [ -0.75 * Math.PI, -0.5 * Math.PI, -0.25 * Math.PI, 0, .25 * Math.PI ];
+
+            //console.log(percentLabels);
+
+            percentRadians.forEach( (percentRadians, i) => {
+                const [x, y] = angleCoordinates(percentRadians);
+
+                d3.select('g#grid').append('line')
+                    .attr('x2', x)
+                    .attr('y2', y)
+                    .attr('class', 'gridLine'); 
+            })
+
+        }
+
+        drawGrid(); 
+
+        function clearOverlays(){
+            /* 
+            ** each remove() removes the only the first qualifying overlay it sees 
+            ** so the loop is required to get all possible overlays
+            */
+            for (let index = 0; index < 7; index++) {
+                d3.select("path.overlay00").remove();
+                d3.select("path.overlay25").remove();
+                d3.select("path.overlay50").remove();
+                d3.select("path.overlay75").remove();
+                d3.select("path.overlay100").remove();
+            }
+        }
+
+        async function drawChart(edipi) {
+            
+            // Remove any existing overlay paths from previous EDIPI selection
+            clearOverlays();
+
+            /******************************************************
+            * Read data and define parser for strings to dates
+            ******************************************************/
+
+            const dataset = await d3.csv("retirement_sample.csv");
+            const retireDates = dataset[edipi];
+
+            /* D3.js date parsing and formating */
+            const dateParser = d3.timeParse("%m/%d/%Y")
+            const formatTime = d3.timeFormat("%m/%d/%Y"); // %-m/%-d removes month/day 0 padding
+
+            /******************************************************
+            * Initial Date Calculations
+            ******************************************************/
+
+            /* Current and Start Date */
+            const dateNow   = dateParser(formatTime(new Date));
+            const dateStart = dateParser(retireDates['Service Comput Retire Date']);           
+
+            /* Calculate and Display Length of Service */
+            const svcLength = d3.timeMonths(dateStart, dateNow); // in months
+            const svcYears  = Math.floor(svcLength.length / 12);
+            const svcMonths = svcLength.length - svcYears * 12;
+
+            svcText = "Current Length of Service: " + svcYears + " years  " + svcMonths + " months"
+            document.getElementById("svc_length").innerHTML  = svcText;
+
+            /* Remaining retirement dates */
+            let retireArray = [];
+
+            retireArray.push(dateParser(retireDates['Mand Retire Date']));           
+            retireArray.push(dateParser(retireDates['Early Retire 50 20 Date']));           
+            retireArray.push(dateParser(retireDates['Retire Opt Date']));
+            retireArray.push(dateParser(retireDates['Retire Opt 55 30 Date']));           
+            retireArray.push(dateParser(retireDates['Fers Min Retire Age Date']));           
+            retireArray.push(dateParser(retireDates['Retire Opt 60 20 Date']));           
+            retireArray.push(dateParser(retireDates['Retire Opt 62 5 Date']));
+
+
+            /******************************************************
+            * Retirement Overlays
+            ******************************************************/
+
+            retireArray.forEach(function (dateRetire, index) {
+                let overlayInner =  (startRadius - 2) + 45 * index;
+                let overlayOuter =  (startRadius + 2) + 45 * index;
+
+                //id's for svg x-axis text elements
+                let endDate = ['retire1', 'retire2', 'retire3', 'retire4', 'retire5', 'retire6', 'retire7',]
+
+                // Check for year = 2999
+                let year = dateRetire.getFullYear();
+                if (year === 9999) {
+
+                    document.getElementById(endDate[index]).innerHTML = '____na____'
+                    return;
+                }
+
+                document.getElementById(endDate[index]).innerHTML = formatTime(dateRetire);
+                console.log(formatTime(dateRetire));
+
+                let retireLength = d3.timeMonths(dateStart, dateRetire);
+
+                retireProgress = svcLength.length / retireLength.length;
+
+
+                // Create retirement overlays
+                let overlayClass = '';
+
+
+                if (retireProgress      < 0.25) { overlayClass = 'overlay00' }
+                else if (retireProgress < 0.50) { overlayClass = 'overlay25' }
+                else if (retireProgress < 0.75) { overlayClass = 'overlay50' }
+                else if (retireProgress < 1.0)  { overlayClass = 'overlay75' }
+                else                            { overlayClass = 'overlay100' }
+                
+                if (retireProgress >= 1.0) { retireProgress = 1.0 }
+
+                angleEnd =  (-0.5 + retireProgress) * Math.PI
+
+                var pathOverlay = arcGenerator({
+                    startAngle:   angleStart,
+                    endAngle:     angleEnd,
+                    innerRadius:  overlayInner,
+                    outerRadius:  overlayOuter
+                });
+
+                d3.select('g#overlay')
+                .append('path')
+                .attr('class', overlayClass)
+                .attr('d', pathOverlay);
+            });
+
+        } 
+
+    </script>
+</body>
